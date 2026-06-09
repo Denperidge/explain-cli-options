@@ -33,11 +33,12 @@ python main.py -r  # or --readme
 ```
 
 #### Run tests
-Extra requirements: [uv](https://docs.astral.sh/uv)
+Extra requirements: [uv](https://docs.astral.sh/uv), [passwd](https://github.com/shadow-maint/shadow), [rsync](https://github.com/RsyncProject/rsync) [man](http://man-db.nongnu.org/)
 
 ```sh
 cd development
 nix-shell  # For non-nix users, ensure uv is available in PATH
-uv run main.py -t  # or --test
-python main.py -t  # alternative notation, relaunches using uv
+uv run pytest
+python main.py -t  # or --test
+# The python version is an alternative notation, which relaunches using uv & invokes pytest from code
 ```
