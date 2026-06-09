@@ -34,8 +34,20 @@ cd explain-cli-options
 ```
 
 #### Generate documentation
+Extra requirements: [vermin](https://github.com/netromdk/vermin)
+
 ```sh
 cd development
 nix-shell  # For non-nix users, ensure vermin is available in PATH
-python mkdocs.py
+python main.py -r  # or --readme
+```
+
+#### Run tests
+Extra requirements: [uv](https://docs.astral.sh/uv), [passwd](https://github.com/shadow-maint/shadow), [rsync](https://github.com/RsyncProject/rsync) [man](http://man-db.nongnu.org/)
+
+```sh
+cd development
+nix-shell  # For non-nix users, ensure uv is available in PATH
+uv run main.py -t  # or --test
+python main.py -t  # alternative notation, relaunches using uv
 ```
