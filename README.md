@@ -13,7 +13,7 @@ chmod +x ~/.local/bin/eco
 Minimum required Python version: 3.6
 
 ```sh
-usage: eco [-h] rsync -avP --progress
+usage: eco [-h] command -avP --example
 
 eco is a no-further-dependency python script that explains any cli options you
 throw at it <3 (hopefully!)
@@ -39,4 +39,3 @@ cd development
 nix-shell  # For non-nix users, ensure vermin is available in PATH
 python mkdocs.py
 ```
-

@@ -39,7 +39,7 @@ def parse_help(command: str, command_args:list[str]):
 if __name__ == "__main__":
     parser = ArgumentParser(
         description="eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)",
-        usage="eco [-h] rsync -avP --progress")
+        usage="eco [-h] command -avP --example")
     parser.add_argument("command", help="command which needs explaining")
 
     eco_args, command_args = parser.parse_known_args()
