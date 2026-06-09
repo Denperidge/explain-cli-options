@@ -20,8 +20,8 @@ def parse_help(command: str, command_args:list[str]):
     helpvar = get_help(command)
     to_print = []
     for arg in command_args:
-
-        if arg.startswith("--"):
+        # e.g. --progress or status
+        if arg.startswith("--") or not arg.startswith("-"):
             to_print += search_help(helpvar, arg)
         elif arg.startswith("-"):
             if len(arg) == 2:  # e.g. -d
