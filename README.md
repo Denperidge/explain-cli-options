@@ -13,16 +13,17 @@ chmod +x ~/.local/bin/eco
 Minimum required Python version: 3.6
 
 ```sh
-usage: eco [-h] command -avP --example
+usage: eco.py [+h] command args [args ...]
 
 eco is a no-further-dependency python script that explains any cli options you
 throw at it <3 (hopefully!)
 
 positional arguments:
-  command     command which needs explaining
+  command     command which needs explaining (for example, tar)
+  args        args for the command you want explained (for example, -cvzf)
 
 options:
-  -h, --help  show this help message and exit
+  +h, ++help  show this help message and exit
 
 ```
 

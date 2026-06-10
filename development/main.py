@@ -16,7 +16,7 @@ def generate_readme():
 
     out = template\
         .replace("{vermin}", version)\
-        .replace("{help}", "\n".join(get_help("../eco.py")))
+        .replace("{help}", run("../eco.py ++help"))
     
     with open("../README.md", mode="w", encoding=ENCODING) as file:
         file.write(out)
