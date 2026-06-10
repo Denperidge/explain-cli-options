@@ -8,5 +8,5 @@ def test_v():
 EXPECTED_pkgid = """     cargo-pkgid(1)
          Print a fully qualified package specification.
 """
-def test_pkgid():
+def test_pkgid():  #
     assert eco("cargo pkgid") == EXPECTED_pkgid
