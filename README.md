@@ -1,6 +1,23 @@
 # eco (Explain Cli Options)
 eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)
 
+```sh
+$ eco rsync -a
+--archive, -a            archive mode is -rlptgoD (no -A,-X,-U,-N,-H)
+
+$ eco rsync -rlptgoD --progress
+--archive, -a            archive mode is -rlptgoD (no -A,-X,-U,-N,-H)
+--recursive, -r          recurse into directories
+--links, -l              copy symlinks as symlinks
+--perms, -p              preserve permissions
+--times, -t              preserve modification times
+--group, -g              preserve group
+--owner, -o              preserve owner (super-user only)
+-D                       same as --devices --specials
+--progress               show progress during transfer
+-P                       same as --partial --progress
+```
+
 ## How-to
 ### Install
 ```sh

@@ -1,6 +1,10 @@
 # eco (Explain Cli Options)
 eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)
 
+```sh
+{usage}
+```
+
 ## How-to
 ### Install
 ```sh

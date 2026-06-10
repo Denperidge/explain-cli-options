@@ -14,9 +14,17 @@ def generate_readme():
     version = list(filter(lambda line: line.startswith("Minimum"), vermin_out))[0]
     version = version.replace("versions", "Python version")
 
+    usage = ""
+    usage_examples = ["rsync -a", "rsync -rlptgoD --progress"]
+    for example in usage_examples:
+        usage += "$ eco " + example + "\n"
+        usage += run("../eco.py " + example)
+        usage += "\n"
+
     out = template\
         .replace("{vermin}", version)\
-        .replace("{help}", run("../eco.py ++help"))
+        .replace("{help}", run("../eco.py ++help"))\
+        .replace("{usage}", usage.rstrip())
     
     with open("../README.md", mode="w", encoding=ENCODING) as file:
         file.write(out)
