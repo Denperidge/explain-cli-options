@@ -14,7 +14,10 @@ def get_help(command: str) -> list[str]:
     return helpvar.split("\n")
 
 def search_help(helplines: list[str], needle: str) -> list[str]:
-    return list(filter(lambda line: search(pattern=fr"([^-\w]|^){needle}[^-]", flags=MULTILINE, string=line), helplines))
+    found = list(filter(lambda line: search(pattern=fr"([^-\w]|^){needle}([^-]|$)", flags=MULTILINE, string=line), helplines))
+    if needle in "".join(helplines) and len(found) == 0:
+        raise Exception(f"{needle} was found in help, but the regex didn't match")
+    return found
 
 def parse_help(command: str, command_args:list[str]):
     helpvar = get_help(command)
