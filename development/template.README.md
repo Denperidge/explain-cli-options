@@ -7,11 +7,14 @@ eco is a no-further-dependency python script that explains any cli options you t
 
 ## How-to
 ### Install
+Optional requirements\*: [man](http://man-db.nongnu.org/)
 ```sh
 # Download to .local/bin/eco (user-scoped) 
 curl https://raw.githubusercontent.com/Denperidge/explain-cli-options/refs/heads/main/eco.py -o ~/.local/bin/eco
 chmod +x ~/.local/bin/eco
 ```
+
+\*: if man is not installed, 
 
 ### Usage
 {vermin}

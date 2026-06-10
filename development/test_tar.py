@@ -1,4 +1,4 @@
-from testutils import eco
+from testutils import eco, more_found
 
 EXPECTED_xzvf = """  tar -xf archive.tar          # Extract all files from archive.tar.
   -x, --extract, --get       extract files from an archive
@@ -7,7 +7,8 @@ EXPECTED_xzvf = """  tar -xf archive.tar          # Extract all files from archi
   -f, --file=ARCHIVE         use archive file or device ARCHIVE
 """
 def test_xzvf():
-    assert eco("tar -xzvf") == EXPECTED_xzvf
+  command = "tar -xzvf"
+  assert eco(command) == more_found(EXPECTED_xzvf, command, True)
 
 EXPECTED_show_snapshot_field_ranges = """      --show-snapshot-field-ranges
                              show valid ranges for snapshot-file fields
