@@ -14,7 +14,7 @@ curl https://raw.githubusercontent.com/Denperidge/explain-cli-options/refs/heads
 chmod +x ~/.local/bin/eco
 ```
 
-\*: if man is not installed, 
+\*: if man is not installed, only the default --help mode will be used
 
 ### Usage
 {vermin}

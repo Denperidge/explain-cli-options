@@ -20,17 +20,20 @@ $ eco rsync -rlptgoD --progress
 
 ## How-to
 ### Install
+Optional requirements\*: [man](http://man-db.nongnu.org/)
 ```sh
 # Download to .local/bin/eco (user-scoped) 
 curl https://raw.githubusercontent.com/Denperidge/explain-cli-options/refs/heads/main/eco.py -o ~/.local/bin/eco
 chmod +x ~/.local/bin/eco
 ```
 
+\*: if man is not installed, only the default --help mode will be used
+
 ### Usage
 Minimum required Python version: 3.6
 
 ```sh
-usage: eco.py [+h] [++debug] command args [args ...]
+usage: eco.py [+h] [++debug] [++man] command args [args ...]
 
 eco is a no-further-dependency python script that explains any cli options you
 throw at it <3 (hopefully!)
@@ -42,6 +45,7 @@ positional arguments:
 options:
   +h, ++help   show this help message and exit
   ++debug, +d  show debug output
+  ++man, +m    prioritise searching man contents over --help output
 
 ```
 
