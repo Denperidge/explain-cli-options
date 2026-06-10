@@ -45,30 +45,28 @@ options:
 ```
 
 ### Development
-#### Clone
+#### Repo setup
+Requirements: [bash](https://www.gnu.org/software/bash/), [uv](https://docs.astral.sh/uv)
 ```sh
 git clone https://github.com/Denperidge/explain-cli-options.git
-cd explain-cli-options
+cd explain-cli-options/development/
+
+nix-shell  # For non-nix users, instead ensure the listed requirements are available in PATH
+
+chmod +x dev.sh  # Make dev.sh executable
+./dev.sh --help  # Show help
 ```
 
 #### Generate documentation
-Extra requirements: [vermin](https://github.com/netromdk/vermin)
-
 ```sh
-cd development
-nix-shell  # For non-nix users, ensure vermin is available in PATH
-python main.py -r  # or --readme
+./dev.sh -r  # or --readme
 ```
 
 #### Run tests
-Extra requirements: [uv](https://docs.astral.sh/uv), [passwd](https://github.com/shadow-maint/shadow), [rsync](https://github.com/RsyncProject/rsync) [man](http://man-db.nongnu.org/)
+Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https://www.gnu.org/software/tar/)
 
 ```sh
-cd development
-nix-shell  # For non-nix users, ensure uv is available in PATH
-uv run pytest
-python main.py -t  # or --test
-# The python version is an alternative notation, which relaunches using uv & invokes pytest from code
+./dev.sh -t  # or --test
 ```
 
 ## Explanation

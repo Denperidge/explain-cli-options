@@ -3,6 +3,6 @@
     nativeBuildInputs = with pkgs.buildPackages; [
       uv
       rsync
-      tar
+      gnutar
     ];
 }
