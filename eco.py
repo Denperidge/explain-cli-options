@@ -39,12 +39,13 @@ def parse_help(command: str, command_args:list[str]):
 if __name__ == "__main__":
     parser = ArgumentParser(
         description="eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)",
-        usage="eco [-h] command -avP --example")
-    parser.add_argument("command", help="command which needs explaining")
+        prefix_chars="+")
+    parser.add_argument("command", help="command which needs explaining (for example, tar)")
+    parser.add_argument("args", nargs="*", help="args for the command you want explained (for example, -cvzf)")
 
-    eco_args, command_args = parser.parse_known_args()
+    args = parser.parse_args()
 
-    for line in parse_help(eco_args.command, command_args):
+    for line in parse_help(args.command, args.args):
         print(line)
 
 
