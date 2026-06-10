@@ -74,3 +74,6 @@ python main.py -t  # or --test
 ## Explanation
 ### eco +h/++help instead of eco -h/--help
 This makes sure that eco's args don't get mixed up with regular CLI arguments
+
+## License
+While credit and contributions are appreciated, this project is released into the public domain under [the Unlicense](LICENSE).
