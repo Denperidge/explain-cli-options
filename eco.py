@@ -41,7 +41,7 @@ if __name__ == "__main__":
         description="eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)",
         prefix_chars="+")
     parser.add_argument("command", help="command which needs explaining (for example, tar)")
-    parser.add_argument("args", nargs="*", help="args for the command you want explained (for example, -cvzf)")
+    parser.add_argument("args", nargs="+", help="args for the command you want explained (for example, -cvzf)")
 
     args = parser.parse_args()
 
