@@ -2,8 +2,7 @@
   pkgs.mkShell {
     nativeBuildInputs = with pkgs.buildPackages; [
       uv
-      vermin
-      
       rsync
+      tar
     ];
 }

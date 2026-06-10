@@ -10,7 +10,7 @@ if __name__ == "__main__":
         template = file.read()
     
     # Get minimum python version
-    vermin_out = run("vermin ../eco.py").split("\n")
+    vermin_out = run("uv run vermin ../eco.py").split("\n")
     version = list(filter(lambda line: line.startswith("Minimum"), vermin_out))[0]
     version = version.replace("versions", "Python version")
 
