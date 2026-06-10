@@ -46,3 +46,7 @@ uv run pytest
 python main.py -t  # or --test
 # The python version is an alternative notation, which relaunches using uv & invokes pytest from code
 ```
+
+## Explanation
+### eco +h/++help instead of eco -h/--help
+This makes sure that eco's args don't get mixed up with regular CLI arguments
