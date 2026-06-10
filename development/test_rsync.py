@@ -1,4 +1,3 @@
-import pytest
 from shared import eco
 
 EXPECTED_a = "--archive, -a            archive mode is -rlptgoD (no -A,-X,-U,-N,-H)\n"

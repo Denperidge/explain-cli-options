@@ -3,7 +3,7 @@ from subprocess import run as _run
 from argparse import ArgumentParser
 from re import search, MULTILINE
 
-def run(command: str, capture_output=True):
+def run(command: str, capture_output=True) -> str:
     out = _run(command, shell=True, encoding="utf-8", capture_output=capture_output)
     if out.returncode != 0:
         raise Exception(out.stderr)
@@ -14,12 +14,27 @@ def get_help(command: str) -> list[str]:
     return helpvar.split("\n")
 
 def search_help(helplines: list[str], needle: str) -> list[str]:
-    found = list(filter(lambda line: search(pattern=fr"([^-\w]|^){needle}([^-]|$)", flags=MULTILINE, string=line), helplines))
-    if needle in "".join(helplines) and len(found) == 0:
-        raise Exception(f"{needle} was found in help, but the regex didn't match")
-    return found
+    relevant_lines = []
+    i = 0  # while instead of for so index can be increased
+    while i != len(helplines):
+        line = helplines[i]
+        # If regex can find needle in line
+        if search(pattern=fr"([^-\w]|^){needle}([^-]|$)", flags=MULTILINE, string=line):
+            # Return it
+            relevant_lines.append(line)
+            # If the line is empty aside from needle
+            if line.strip() == needle:
+                i += 1  # Move index up
+                relevant_lines.append(helplines[i])  # Add next line
+                
+        # If the needle is in the line but not detected by regex, warn
+        #elif needle in line:
+        #    print(f"Possibly relevant, but not detected by regex:\n{line}")
+        i += 1  # Move on to next line
 
-def parse_help(command: str, command_args:list[str]):
+    return relevant_lines
+
+def parse_help(command: str, command_args:list[str]) -> list[str]:
     helpvar = get_help(command)
     to_print = []
     for arg in command_args:
