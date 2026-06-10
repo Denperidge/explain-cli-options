@@ -1,4 +1,4 @@
-from shared import eco
+from testutils import eco
 
 EXPECTED_xzvf = """  tar -xf archive.tar          # Extract all files from archive.tar.
   -x, --extract, --get       extract files from an archive
