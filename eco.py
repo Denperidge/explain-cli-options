@@ -67,8 +67,8 @@ Returns: list of lines matching the needle regex(es)
 """
 def search_in_lines(haystack: list[str], needle: str) -> list[str]:
     regex_find_needle = fr"([^-\w]|^){needle}([^-]|$)"
-    regex_letters_not_From_needle = fr"[^\W{needle.replace("-", "")}]"
-    debug(f"Searching help for {needle} with {regex_find_needle} & {regex_letters_not_From_needle}")
+    regex_letters_not_from_needle = fr"[^\W0-9{needle.replace("-", "")}]"
+    debug(f"Searching help for {needle} with {regex_find_needle} & {regex_letters_not_from_needle}")
     
     relevant_lines = []
     i = 0  # while instead of for so index can be increased
@@ -82,7 +82,7 @@ def search_in_lines(haystack: list[str], needle: str) -> list[str]:
             
             debug(f"\t[MATCH {needle}] checking if only {needle} letters are in line")
             # If the line only has word characters that are in the needle
-            if not search(pattern=regex_letters_not_From_needle, string=line, flags=IGNORECASE):
+            if not search(pattern=regex_letters_not_from_needle, string=line, flags=IGNORECASE):
                 debug(f"\t[EMPTY] no letters aside from {needle} letters are in line. Adding extra line...")
                 
                 i += 1  # Move index up
@@ -171,27 +171,49 @@ def get_relevant_command_docs(command: str, selected_mode_name: str, command_arg
     relevant_out = out[selected_mode_name]
     relevant_results = len(relevant_out)
 
-    if selected_mode_name == "--help" and len(out["man"]) > relevant_results:
-    # If nothing was found, return results of man
-        if relevant_results == 0 and not second_try:
-            debug("[MODE INFO] Couldn't find results using --help, re-running with man...")
-            return get_relevant_command_docs(command, "--help", command_args, second_try=True)
+    other_mode = "man" if selected_mode_name == "--help" else "--help"
+    other_results = len(out[other_mode])
 
-        # Else, just suggest re-running with different eco args to the user
-        argv.insert(1, "+m")
+    if relevant_results < other_results:
         message = STR_MORE_FOUND.format("man pages", " ".join(argv))
-    elif selected_mode_name == "man" and len(out["--help"]) > relevant_results:
-        # If nothing was found, return results of --help
-        if relevant_results == 0 and not second_try:
-            debug("[MODE INFO] Couldn't find results using man, re-running with --help...")
-            return get_relevant_command_docs(command, "--help", command_args, second_try=True)
+        
+    # If results were found in the current mode
+    if relevant_results > 0:
+        # But more are found in the other mode
+        if other_results > relevant_results:
+            # suggest re-running with different eco args to the user
+            if other_mode == "--help":
+                # If the better results came from --help,
+                title = "--help output"
+                # Remove +m/++man from re-run sugestion
+                if "+m" in argv:
+                    argv.remove("+m")
+                if "++man" in argv:   # Don't use elif, remove both just in case
+                    argv.remove("++man")
+            elif other_mode == "man":
+                # If the better results came from man,
+                title = "man pages"
+                argv.insert(1, "+m")  # Add +m to the re-run suggestion
+            message = STR_MORE_FOUND.format(title, " ".join(argv))
+        elif other_results == 0:
+            # If no results can be found in any mode
+            pass
+    # If no relevant results found current mode but are found in other
+    elif relevant_results == 0 and other_results > 0:
+        debug(f"[MODE INFO] Couldn't find results using {selected_mode_name}, returning {other_mode} results...")
+        return (out[other_mode], None)
+    # If no results are found at all and there are still command args
+    elif relevant_results == 0 and other_results == 0 and len(command_args) > 0:
+        # Try again 
+        if not second_try:
+            command_args = [
+                command + "-" + "-".join(command_args)
+            ]
+            return get_relevant_command_docs(command, selected_mode_name, command_args, second_try=True)
 
-        # Else, just suggest re-running with different eco args to the user
-        if "+m" in argv:
-            argv.remove("+m")
-        if "++man" in argv:   # Don't use elif, remove both just in case
-            argv.remove("++man")
-        message = STR_MORE_FOUND.format("--help output", " ".join(argv))
+
+       
+
     
     return (relevant_out, message)
 
@@ -204,7 +226,7 @@ if __name__ == "__main__":
     parser.add_argument("++man", "+m", action="store_true", help="prioritise searching man contents over --help output")
     parser.add_argument("command", help="command which needs explaining (for example, tar)")
     parser.add_argument("args", nargs="+", help="args for the command you want explained (for example, -cvzf)")
-
+    # TODO if no results try without spaces?
     args = parser.parse_args()
 
     # if debug is enabled, set debug to print
