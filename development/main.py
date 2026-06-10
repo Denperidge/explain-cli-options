@@ -55,7 +55,7 @@ if __name__ == "__main__":
         print("Testing. Checking if pytest is installed...")
         try: 
             import pytest
-            pytest.main()
+            run("uv run pytest", capture_output=False)
         except ModuleNotFoundError:
             print("Pytest not installed. Creating and/or loading venv & restarting...")
             relaunch_with_uv_and_exit()

@@ -3,8 +3,8 @@ from subprocess import run as _run
 from argparse import ArgumentParser
 from re import search, MULTILINE
 
-def run(command):
-    out = _run(command, shell=True, encoding="utf-8", capture_output=True)
+def run(command: str, capture_output=True):
+    out = _run(command, shell=True, encoding="utf-8", capture_output=capture_output)
     if out.returncode != 0:
         raise Exception(out.stderr)
     return out.stdout
