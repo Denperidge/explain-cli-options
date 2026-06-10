@@ -24,5 +24,6 @@ if [[ "$1" == -r ]] || [[ "$1" == --r* ]]; then
 fi
 
 if [[ "$1" == -t ]] || [[ $1 == --t* ]]; then
-    uv run pytest
+    shift  # Remove first arg
+    uv run pytest -v $@  # Pass other args
 fi
