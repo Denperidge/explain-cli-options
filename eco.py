@@ -71,7 +71,7 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         description="eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)",
         prefix_chars="+")
-    parser.add_argument("++debug", "+d", action="store_true", help="aaa")
+    parser.add_argument("++debug", "+d", action="store_true", help="show debug output")
     parser.add_argument("command", help="command which needs explaining (for example, tar)")
     parser.add_argument("args", nargs="+", help="args for the command you want explained (for example, -cvzf)")
 

@@ -4,5 +4,6 @@
       uv
       rsync
       gnutar
+      cargo
     ];
 }

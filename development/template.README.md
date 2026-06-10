@@ -39,7 +39,7 @@ chmod +x dev.sh  # Make dev.sh executable
 ```
 
 #### Run tests
-Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https://www.gnu.org/software/tar/)
+Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https://www.gnu.org/software/tar/), [cargo](https://crates.io/)
 
 ```sh
 ./dev.sh -t  # or --test
@@ -48,6 +48,9 @@ Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https:
 ## Explanation
 ### eco +h/++help instead of eco -h/--help
 This makes sure that eco's args don't get mixed up with regular CLI arguments
+
+### EXPECTED_ variables in tests
+The EXPECTED_ variables are global for readability & writeability; no messing with any indenting aside from the actual command output
 
 ## License
 While credit and contributions are appreciated, this project is released into the public domain under [the Unlicense](LICENSE).

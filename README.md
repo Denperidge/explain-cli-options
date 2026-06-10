@@ -30,17 +30,18 @@ chmod +x ~/.local/bin/eco
 Minimum required Python version: 3.6
 
 ```sh
-usage: eco.py [+h] command args [args ...]
+usage: eco.py [+h] [++debug] command args [args ...]
 
 eco is a no-further-dependency python script that explains any cli options you
 throw at it <3 (hopefully!)
 
 positional arguments:
-  command     command which needs explaining (for example, tar)
-  args        args for the command you want explained (for example, -cvzf)
+  command      command which needs explaining (for example, tar)
+  args         args for the command you want explained (for example, -cvzf)
 
 options:
-  +h, ++help  show this help message and exit
+  +h, ++help   show this help message and exit
+  ++debug, +d  show debug output
 
 ```
 
@@ -63,7 +64,7 @@ chmod +x dev.sh  # Make dev.sh executable
 ```
 
 #### Run tests
-Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https://www.gnu.org/software/tar/)
+Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https://www.gnu.org/software/tar/), [cargo](https://crates.io/)
 
 ```sh
 ./dev.sh -t  # or --test
@@ -72,6 +73,9 @@ Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https:
 ## Explanation
 ### eco +h/++help instead of eco -h/--help
 This makes sure that eco's args don't get mixed up with regular CLI arguments
+
+### EXPECTED_ variables in tests
+The EXPECTED_ variables are global for readability & writeability; no messing with any indenting aside from the actual command output
 
 ## License
 While credit and contributions are appreciated, this project is released into the public domain under [the Unlicense](LICENSE).
