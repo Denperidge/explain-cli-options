@@ -1,0 +1,19 @@
+name: Test eco
+on:
+  - push
+
+jobs:
+  run-tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.2.0
+      - name: Setup venv
+        run: uv venv
+        working-directory: development/
+      - name: Run tests
+        run: uv run pytest
+        working-directory: development/
