@@ -1,6 +1,7 @@
 from sys import path, argv
 path.append("../")
 from eco import run
+from testutils import more_found
 
 ENCODING = "utf-8"
 
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     usage_examples = ["rsync -a", "rsync -rlptgoD --progress"]
     for example in usage_examples:
         usage += "$ eco " + example + "\n"
-        usage += run("../eco.py " + example)
+        usage += run("../eco.py " + example).replace(more_found("", example, True), "")
         usage += "\n"
 
     # Replace vermin, example usage & help in template
