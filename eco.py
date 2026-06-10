@@ -1,21 +1,49 @@
 #!/usr/bin/env python
-from subprocess import run as _run
-from argparse import ArgumentParser
-from re import search, MULTILINE, IGNORECASE
-from sys import argv
+from subprocess import run as _run  # runs --help or man
+from argparse import ArgumentParser  # handles CLI
+from re import search, MULTILINE, IGNORECASE  # searches --help/man
+from sys import argv  # used to suggest re-running in a different mode if it has more results
 
-debug = lambda x: x
+DESCRIPTION = """
 
-def run(command: str, capture_output=True) -> str:
-    out = _run(command, shell=True, encoding="utf-8", capture_output=capture_output)
+eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)
+
+"""
+
+debug = lambda x: x  # By default, don't log anything
+
+"""
+Args:
+    - command: shell command to run
+               for example: 'tar --help', 'man rsync'
+
+Raises: if the command exits with any code that's not 0,
+        it raises ChildProcessError containing stderr
+
+Returns: utf-8 stdout
+"""
+def run(command: str) -> str:
+    out = _run(command, shell=True, encoding="utf-8", capture_output=True)
     if out.returncode != 0:
         raise ChildProcessError(out.stderr)
     return out.stdout
 
+"""
+Wrapper arround run() that:
+- Runs command with --help appended
+- Returns stdout split by newline
+"""
 def get_help(command: str) -> list[str]:
     helpvar = run(f"{command} --help")
     return helpvar.split("\n")
 
+"""
+Wrapper arround run() that:
+- Runs command with man prepended
+- As opposed to get_help, catches ChildProcessError & returns []
+  This ensures the script still works for people without man installed
+- If it doesn't error, return stdout split by newline
+"""
 def get_man(command: str) -> list[str]:
     try:
         return run(f"man {command}").split("\n")
@@ -23,6 +51,20 @@ def get_man(command: str) -> list[str]:
         debug("Could not run man, returning empty list")
         return []
 
+"""
+Return all lines from haystack with regex-matched needle
+
+If a line only has letters from needle in it,
+an extra line is added to the output
+
+Args:
+    - haystack: list of lines
+                for example: output from get_{man,help}
+    - needle: string to search for in lines
+                for example: '--progress', '-p', 'get-version'
+
+Returns: list of lines matching the needle regex(es)
+"""
 def search_in_lines(haystack: list[str], needle: str) -> list[str]:
     regex_find_needle = fr"([^-\w]|^){needle}([^-]|$)"
     regex_letters_not_From_needle = fr"[^\W{needle.replace("-", "")}]"
@@ -55,7 +97,22 @@ def search_in_lines(haystack: list[str], needle: str) -> list[str]:
 
     return relevant_lines
 
-"""Mode-independent part of searching command docs"""
+
+"""
+Mode-independent part of searching command docs:
+- Loops over individual args (['-pa', '--progress', 'get-version'])
+- Splits up multiple shorthand args ('-pa' -> '-p', '-a')
+- Run search_in_lines with individual args as needle
+- Return results
+
+Args:
+    - lines: list of lines
+             for example: output from get_{man,help}
+    - command_args: list of arguments that need finding/explaining
+                    for example: ['-av', '--progress', 'get-version'] 
+
+Returns: list of relevant doc lines
+"""
 def _get_relevant_command_docs(lines: list[str], command_args:list[str]) -> list[str]:
     to_print = []
     for arg in command_args:
@@ -74,17 +131,42 @@ def _get_relevant_command_docs(lines: list[str], command_args:list[str]) -> list
             print(f"Skipping non-option: {arg}")
     return to_print
 
+"""Supported modes"""
 MODES = [
     { "name": "--help", "func": get_help },
     { "name": "man", "func": get_man }
 ]
+"""Template for message in case the other mode has more results"""
 STR_MORE_FOUND = ("More results were found in {0}. To search there, run:\n$ {1}")
-def get_relevant_command_docs(command: str, selected_mode_name: str, args: list[str], second_try:bool=False) -> (list[str], str|None):
+
+"""
+Mode-selected part of searching command docs:
+- runs _get_relevant_command_docs using all modes
+- if the selected mode has no results as opposed to the other,
+  return results of functing using the other mode
+- if the selected mode has results but less than the other,
+  return message to notify user & show adapted eco usage
+- if the selected mode has results,
+  return found relevant lines
+
+Args:
+    - command: shell command to run
+               for example: 'tar --help', 'man rsync'
+    - selected_mode_name
+    - command_args: list of arguments that need finding/explaining
+                    for example: ['-av', '--progress', 'get-version'] 
+    - second_try: if set to False, re-run again with
+                  second_try = True and a different selected mode
+                  if results are empty
+
+Returns tuple (lines: list of relevant line str, message: None or string)
+"""
+def get_relevant_command_docs(command: str, selected_mode_name: str, command_args: list[str], second_try:bool=False) -> (list[str], str|None):
     out = {}
     message = None
     for mode in MODES:
         out[mode["name"]] = _get_relevant_command_docs(
-            mode["func"](command), args)
+            mode["func"](command), command_args)
     
     relevant_out = out[selected_mode_name]
     relevant_results = len(relevant_out)
@@ -93,7 +175,7 @@ def get_relevant_command_docs(command: str, selected_mode_name: str, args: list[
     # If nothing was found, return results of man
         if relevant_results == 0 and not second_try:
             debug("[MODE INFO] Couldn't find results using --help, re-running with man...")
-            return get_relevant_command_docs(command, "--help", args, second_try=True)
+            return get_relevant_command_docs(command, "--help", command_args, second_try=True)
 
         # Else, just suggest re-running with different eco args to the user
         argv.insert(1, "+m")
@@ -102,7 +184,7 @@ def get_relevant_command_docs(command: str, selected_mode_name: str, args: list[
         # If nothing was found, return results of --help
         if relevant_results == 0 and not second_try:
             debug("[MODE INFO] Couldn't find results using man, re-running with --help...")
-            return get_relevant_command_docs(command, "--help", args, second_try=True)
+            return get_relevant_command_docs(command, "--help", command_args, second_try=True)
 
         # Else, just suggest re-running with different eco args to the user
         if "+m" in argv:
@@ -114,8 +196,9 @@ def get_relevant_command_docs(command: str, selected_mode_name: str, args: list[
     return (relevant_out, message)
 
 if __name__ == "__main__":
+    # eco CLI handling
     parser = ArgumentParser(
-        description="eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)",
+        description=DESCRIPTION.strip(),
         prefix_chars="+")
     parser.add_argument("++debug", "+d", action="store_true", help="show debug output")
     parser.add_argument("++man", "+m", action="store_true", help="prioritise searching man contents over --help output")
@@ -124,15 +207,19 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # if debug is enabled, set debug to print
     if args.debug:
         debug = lambda x: print(x)
 
+    # select mode
     mode = "man" if args.man else "--help"
     (lines, message) = get_relevant_command_docs(args.command, mode, args.args)
     
+    # print found results
     for line in lines:
         print(line)
     
+    # if more results are found in another mode, notify the user
     if message:
         print()
         print(message)
