@@ -8,5 +8,7 @@ def test_v():
 EXPECTED_pkgid = """     cargo-pkgid(1)
          Print a fully qualified package specification.
 """
-def test_pkgid():  #
-    assert eco("cargo pkgid") == EXPECTED_pkgid
+def test_pkgid():
+    # The ubuntu-latest CI runner has 2 extra spaces on the output here
+    assert eco("cargo pkgid") == EXPECTED_pkgid or\
+        eco("cargo pkgid") == EXPECTED_pkgid.replace("c", "  c", count=1).replace("P", "  P", count=1)
