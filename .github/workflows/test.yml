@@ -14,8 +14,8 @@ jobs:
       
       - name: Install uv
         uses: astral-sh/setup-uv@v8.2.0
-      - name: Install cargo to get manpages
-        run: sudo apt install -y cargo
+      - name: Install dependencies to get manpages
+        run: sudo apt install -y cargo docker-compose
       
       - name: Run tests
         run: bash dev.sh --test
