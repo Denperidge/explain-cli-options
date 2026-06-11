@@ -11,10 +11,12 @@ jobs:
     
     steps:
       - uses: actions/checkout@v6
+      
       - name: Install uv
         uses: astral-sh/setup-uv@v8.2.0
-      - name: Try to get manpages for cargo testing
+      - name: Install cargo to get manpages
         run: sudo apt install -y cargo
+      
       - name: Run tests
         run: bash dev.sh --test
         working-directory: development/
