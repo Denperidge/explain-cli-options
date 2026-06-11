@@ -21,6 +21,14 @@ def test_add_dev_with_quotes():
     # This is originally the only way to get cargo add help info
     assert eco(COMMAND_add_dev) == more_found(EXPECTED_add_dev, COMMAND_add_dev.replace("'", ""), man=True) 
 
-# This is the behaviour after patching
-#def test_add_dev_without_quotes():
-#    assert eco(COMMAND_add_dev.replace("'", "")) == EXPECTED_add_dev
+EXPECTED_TWO = """Results main command
+    add         Add dependencies to a manifest file
+
+Results subcommand
+      --dev
+          Add as development dependency
+"""
+# This is the expected behaviour after patching
+def test_add_dev_without_quotes():
+    command = COMMAND_add_dev.replace("'", "")
+    assert eco(command) == EXPECTED_TWO
