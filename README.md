@@ -68,7 +68,7 @@ chmod +x dev.sh  # Make dev.sh executable
 ```
 
 #### Run tests
-Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https://www.gnu.org/software/tar/), [cargo](https://crates.io/)
+Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https://www.gnu.org/software/tar/), [cargo](https://crates.io/), [docker-compose](https://github.com/docker/compose)
 
 ```sh
 ./dev.sh -t  # or --test

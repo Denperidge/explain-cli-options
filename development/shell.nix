@@ -5,5 +5,6 @@
       rsync
       gnutar
       cargo
+      docker-compose
     ];
 }
