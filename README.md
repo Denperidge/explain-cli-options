@@ -82,6 +82,8 @@ Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https:
 ## Explanation
 ### Terminology
 - **docs**: list of lines from `{command} --help` or `man {command}`
+- **command**: an executable command. For example: `npm`, `cargo`...
+- **subcommand**: a command within a command. For example: `npm install` `cargo add`
 
 ### eco +h/++help instead of eco -h/--help
 This makes sure that eco's args don't get mixed up with regular CLI arguments
