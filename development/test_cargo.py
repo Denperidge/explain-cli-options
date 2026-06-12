@@ -13,22 +13,32 @@ def test_pkgid():
     assert eco("cargo pkgid") == EXPECTED_pkgid or\
         eco("cargo pkgid") == EXPECTED_pkgid.replace("c", "  c", count=1).replace("P", "  P", count=1)
 
-COMMAND_add_dev = "'cargo add' --dev"
-EXPECTED_add_dev = """      --dev
+"""
+cargo --help & cargo add --help are seperate help sections
+Originally subcommand helps could only be searched using eco 'cargo add' (args)
+...
+"""
+COMMAND_add_dev_with_quotes = "'cargo add' --dev"
+EXPECTED_add_dev_with_quotes = """      --dev
           Add as development dependency
 """
 def test_add_dev_with_quotes():
-    # This is originally the only way to get cargo add help info
-    assert eco(COMMAND_add_dev) == more_found(EXPECTED_add_dev, COMMAND_add_dev.replace("'", ""), man=True) 
+    assert eco(COMMAND_add_dev_with_quotes) == more_found(EXPECTED_add_dev_with_quotes, COMMAND_add_dev_with_quotes.replace("'", ""), man=True) 
 
-EXPECTED_TWO = """Results main command
+
+"""
+This was until f3f1338169fc03ae1e959a610fc0e877350968dd
+Since that commit, cargo add (args) works and returns results
+from main help & subcommand help
+"""
+EXPECTED_add_dev_no_quotes = """Results main command
     add         Add dependencies to a manifest file
 
 Results subcommand
       --dev
           Add as development dependency
 """
-# This is the expected behaviour after patching
 def test_add_dev_without_quotes():
-    command = COMMAND_add_dev.replace("'", "")
-    assert eco(command) == EXPECTED_TWO
+    command = COMMAND_add_dev_with_quotes.replace("'", "")
+    assert eco(command) == more_found(EXPECTED_add_dev_no_quotes, command, man=True)
+

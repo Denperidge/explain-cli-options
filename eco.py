@@ -233,17 +233,24 @@ if __name__ == "__main__":
     if args.debug:
         debug = lambda x: print(x)
 
+    messages = []
+
     # select mode
     mode = "man" if args.man else "--help"
     (lines, message) = get_relevant_command_docs(args.command, mode, args.args)
+
+    if message:
+        messages.append(message)
 
     subcommand_docs = []
     possible_subcommand_names = list(filter(lambda arg: not arg.startswith("-"), args.args))
     for i in range(1, len(possible_subcommand_names)+1):
         command = f"{args.command} {" ".join(possible_subcommand_names[0:i])}"
-        # TODO handle message from subcommand
-        subcommand_docs += get_relevant_command_docs(command, mode, args.args[i:])[0]
-    
+        (subdocs, submsg) = get_relevant_command_docs(command, mode, args.args[i:])
+        subcommand_docs += subdocs
+        if submsg:
+            messages.append(submsg)
+
     # print found results
     if len(subcommand_docs) != 0:
         print("Results main command")
@@ -256,7 +263,7 @@ if __name__ == "__main__":
         print(line)
 
     # if more results are found in another mode, notify the user
-    if message:
+    for message in messages:
         print()
         print(message)
 
