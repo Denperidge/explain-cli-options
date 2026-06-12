@@ -1,4 +1,4 @@
-from testutils import eco, more_found
+from testutils import eco, more_found, get_index_from_help
 
 EXPECTED_v = "  -v, --verbose...               Use verbose output (-vv very verbose/build.rs output)\n"
 def test_v():
@@ -45,8 +45,13 @@ def test_add_dev_without_quotes():
 def test_add_dev_without_quotes_with_line_index():
     command = COMMAND_add_dev_no_quotes + " ++line"
     expected = EXPECTED_add_dev_no_quotes.split("\n")
-    expected[1] = "29 " + expected[1]
-    expected[4] = "125 " + expected[4]
-    expected[5] = "126 " + expected[5]
+    line_index_1 = get_index_from_help("cargo", "add         Add dependencies to a manifest file")
+    line_index_2 = get_index_from_help("cargo add", "--dev")
+    line_index_3 = get_index_from_help("cargo add", "Add as development dependency")
+    #raise Exception(f"{line_index_1} {line_index_2} {line_index_3}")
+
+    expected[1] = f"{line_index_1} {expected[1]}"
+    expected[4] = f"{line_index_2} {expected[4]}"
+    expected[5] = f"{line_index_3} {expected[5]}"
 
     assert eco(command) == more_found("\n".join(expected), command, man=True)
