@@ -49,6 +49,9 @@ Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https:
 ```
 
 ## Explanation
+### Terminology
+- **docs**: list of lines from `{command} --help` or `man {command}`
+
 ### eco +h/++help instead of eco -h/--help
 This makes sure that eco's args don't get mixed up with regular CLI arguments
 

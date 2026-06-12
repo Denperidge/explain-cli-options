@@ -2,9 +2,6 @@
 eco is a no-further-dependency python script that explains any cli options you throw at it <3 (hopefully!)
 
 ```sh
-$ eco rsync -a
---archive, -a            archive mode is -rlptgoD (no -A,-X,-U,-N,-H)
-
 $ eco rsync -rlptgoD --progress
 --archive, -a            archive mode is -rlptgoD (no -A,-X,-U,-N,-H)
 --recursive, -r          recurse into directories
@@ -16,6 +13,14 @@ $ eco rsync -rlptgoD --progress
 -D                       same as --devices --specials
 --progress               show progress during transfer
 -P                       same as --partial --progress
+
+$ eco cargo add --dev
+Results main command
+    add         Add dependencies to a manifest file
+
+Results subcommand
+      --dev
+          Add as development dependency
 ```
 
 ## How-to
@@ -75,6 +80,9 @@ Extra requirements: [rsync](https://github.com/RsyncProject/rsync), [tar](https:
 ```
 
 ## Explanation
+### Terminology
+- **docs**: list of lines from `{command} --help` or `man {command}`
+
 ### eco +h/++help instead of eco -h/--help
 This makes sure that eco's args don't get mixed up with regular CLI arguments
 

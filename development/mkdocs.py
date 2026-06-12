@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     # Get example output from eco
     usage = ""
-    usage_examples = ["rsync -a", "rsync -rlptgoD --progress"]
+    usage_examples = ["rsync -rlptgoD --progress", "cargo add --dev"]
     for example in usage_examples:
         usage += "$ eco " + example + "\n"
         usage += run("../eco.py " + example).replace(more_found("", example, True), "")
