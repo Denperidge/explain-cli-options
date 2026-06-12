@@ -11,6 +11,7 @@ eco is a no-further-dependency python script that explains any cli options you t
 """
 
 debug = lambda x: x  # By default, don't log anything
+add_line_index = lambda line, i: line  # By default, don't add line index
 
 """
 Args:
@@ -78,7 +79,7 @@ def search_in_lines(haystack: list[str], needle: str) -> list[str]:
         if search(pattern=regex_find_needle, string=line, flags=MULTILINE):
             debug(f"\t[MATCH {needle}] {line}")
             # Return it
-            relevant_lines.append(line)
+            relevant_lines.append(add_line_index(line, i))
             
             debug(f"\t[MATCH {needle}] checking if only {needle} letters are in line")
             # If the line only has word characters that are in the needle
@@ -86,7 +87,7 @@ def search_in_lines(haystack: list[str], needle: str) -> list[str]:
                 debug(f"\t[EMPTY] no letters aside from {needle} letters are in line. Adding extra line...")
                 
                 i += 1  # Move index up
-                relevant_lines.append(haystack[i])  # Add next line
+                relevant_lines.append(add_line_index(haystack[i], i))  # Add next line
         else:
             debug(f"\t[NON MATCH {needle}] '{line}'")
 
@@ -222,8 +223,9 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         description=DESCRIPTION.strip(),
         prefix_chars="+")
-    parser.add_argument("++debug", "+d", action="store_true", help="show debug output")
-    parser.add_argument("++man", "+m", action="store_true", help="prioritise searching man contents over --help output")
+    parser.add_argument("+d", "++debug", action="store_true", help="show debug output")
+    parser.add_argument("+m", "++man", action="store_true", help="prioritise searching man contents over --help output")
+    parser.add_argument("+l", "++line", action="store_true", help="add line index to output")
     parser.add_argument("command", help="command which needs explaining (for example, tar)")
     parser.add_argument("args", nargs="+", help="args for the command you want explained (for example, -cvzf)")
     # TODO if no results try without spaces?
@@ -232,6 +234,9 @@ if __name__ == "__main__":
     # if debug is enabled, set debug to print
     if args.debug:
         debug = lambda x: print(x)
+    # If line is enabled, add line indexes
+    if args.line:
+        add_line_index = lambda line, i: f"{i} {line}"
 
     messages = []
 
