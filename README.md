@@ -38,7 +38,7 @@ chmod +x ~/.local/bin/eco
 Minimum required Python version: 3.6
 
 ```sh
-usage: eco.py [+h] [++debug] [++man] command args [args ...]
+usage: eco.py [+h] [++debug] [++man] [++line] command args [args ...]
 
 eco is a no-further-dependency python script that explains any cli options you
 throw at it <3 (hopefully!)
@@ -51,6 +51,7 @@ options:
   +h, ++help   show this help message and exit
   ++debug, +d  show debug output
   ++man, +m    prioritise searching man contents over --help output
+  ++line, +l   add line index to output
 
 ```
 

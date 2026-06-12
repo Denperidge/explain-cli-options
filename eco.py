@@ -223,9 +223,9 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         description=DESCRIPTION.strip(),
         prefix_chars="+")
-    parser.add_argument("+d", "++debug", action="store_true", help="show debug output")
-    parser.add_argument("+m", "++man", action="store_true", help="prioritise searching man contents over --help output")
-    parser.add_argument("+l", "++line", action="store_true", help="add line index to output")
+    parser.add_argument("++debug", "+d", action="store_true", help="show debug output")
+    parser.add_argument("++man", "+m", action="store_true", help="prioritise searching man contents over --help output")
+    parser.add_argument("++line", "+l", action="store_true", help="add line index to output")
     parser.add_argument("command", help="command which needs explaining (for example, tar)")
     parser.add_argument("args", nargs="+", help="args for the command you want explained (for example, -cvzf)")
     # TODO if no results try without spaces?
