@@ -23,10 +23,10 @@ Raises: if the command exits with any code that's not 0,
 Returns: utf-8 stdout
 """
 def run(command: str) -> str:
-    out = _run(command, shell=True, encoding="utf-8", capture_output=True)
-    if out.returncode != 0:
-        raise ChildProcessError(out.stderr)
-    return out.stdout
+    command_out = _run(command, shell=True, encoding="utf-8", capture_output=True)
+    if command_out.returncode != 0:
+        raise ChildProcessError(command_out.stderr)
+    return command_out.stdout
 
 """
 Wrapper arround run() that:
@@ -113,7 +113,7 @@ Args:
 
 Returns: list of relevant doc lines
 """
-def _get_relevant_command_docs(lines: list[str], command_args:list[str]) -> list[str]:
+def _get_relevant_docs(lines: list[str], command_args:list[str]) -> list[str]:
     to_print = []
     for arg in command_args:
         # e.g. --progress or status
@@ -161,11 +161,11 @@ Args:
 
 Returns tuple (lines: list of relevant line str, message: None or string)
 """
-def get_relevant_command_docs(command: str, selected_mode_name: str, command_args: list[str], second_try:bool=False) -> (list[str], str|None):
+def get_relevant_docs(command: str, selected_mode_name: str, command_args: list[str], second_try:bool=False) -> (list[str], str|None):
     out = {}
     message = None
     for mode in MODES:
-        out[mode["name"]] = _get_relevant_command_docs(
+        out[mode["name"]] = _get_relevant_docs(
             mode["func"](command), command_args)
     
     relevant_out = out[selected_mode_name]
@@ -209,7 +209,7 @@ def get_relevant_command_docs(command: str, selected_mode_name: str, command_arg
             command_args = [
                 command + "-" + "-".join(command_args)
             ]
-            return get_relevant_command_docs(command, selected_mode_name, command_args, second_try=True)
+            return get_relevant_docs(command, selected_mode_name, command_args, second_try=True)
 
 
        
@@ -237,7 +237,7 @@ if __name__ == "__main__":
 
     # select mode
     mode = "man" if args.man else "--help"
-    (lines, message) = get_relevant_command_docs(args.command, mode, args.args)
+    (maincommand_lines, message) = get_relevant_docs(args.command, mode, args.args)
 
     if message:
         messages.append(message)
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     possible_subcommand_names = list(filter(lambda arg: not arg.startswith("-"), args.args))
     for i in range(1, len(possible_subcommand_names)+1):
         command = f"{args.command} {" ".join(possible_subcommand_names[0:i])}"
-        (subdocs, submsg) = get_relevant_command_docs(command, mode, args.args[i:])
+        (subdocs, submsg) = get_relevant_docs(command, mode, args.args[i:])
         subcommand_docs += subdocs
         if submsg:
             messages.append(submsg)
@@ -254,7 +254,7 @@ if __name__ == "__main__":
     # print found results
     if len(subcommand_docs) != 0:
         print("Results main command")
-    for line in lines:
+    for line in maincommand_lines:
         print(line)
     
     if len(subcommand_docs) != 0:
