@@ -11,7 +11,7 @@ eco is a no-further-dependency python script that explains any cli options you t
 """
 
 debug = lambda x: x  # By default, don't log anything
-add_line_index = lambda line, i: line  # By default, don't add line index
+add_line_index = lambda line, i: f"[{i}] {line}"  # By default, add line index
 
 """
 Args:
@@ -225,7 +225,7 @@ if __name__ == "__main__":
         prefix_chars="+")
     parser.add_argument("++debug", "+d", action="store_true", help="show debug output")
     parser.add_argument("++man", "+m", action="store_true", help="prioritise searching man contents over --help output")
-    parser.add_argument("++line", "+l", action="store_true", help="add line index to output")
+    parser.add_argument("++no-index", "+n", action="store_true", help="remove line index from output")
     parser.add_argument("command", help="command which needs explaining (for example, tar)")
     parser.add_argument("args", nargs="+", help="args for the command you want explained (for example, -cvzf)")
     # TODO if no results try without spaces?
@@ -235,8 +235,8 @@ if __name__ == "__main__":
     if args.debug:
         debug = lambda x: print(x)
     # If line is enabled, add line indexes
-    if args.line:
-        add_line_index = lambda line, i: f"{i} {line}"
+    if args.no_index:
+        add_line_index = lambda line, i: line 
 
     messages = []
 
