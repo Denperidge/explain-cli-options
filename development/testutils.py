@@ -12,6 +12,11 @@ def eco(command: str):
 def get_help(command: str):
     return run(command + " --help")
 
+"""
+Other versions of dependencies have different indexes
+this broke CI on GitHub Actions/ubuntu-latest
+Use a search instead
+"""
 def get_index_from_help(command: str, needle: str):
     help_out = get_help(command).split("\n")
     i = 0
