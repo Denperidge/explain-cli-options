@@ -1,8 +1,8 @@
-from testutils import eco, more_found, get_index_from_help
+from testutils import eco, more_found, get_index_from_help, eco_returns
 
 EXPECTED_v = "  -v, --verbose...               Use verbose output (-vv very verbose/build.rs output)\n"
 def test_v():
-    assert eco("cargo -v") == EXPECTED_v
+    assert eco_returns("cargo -v", EXPECTED_v)
 
 # Requires man fallback & no results for either mode fallback
 EXPECTED_pkgid = """     cargo-pkgid(1)
@@ -27,6 +27,7 @@ def test_add_dev_with_quotes():
 
 
 """
+...
 This was until f3f1338169fc03ae1e959a610fc0e877350968dd
 Since that commit, cargo add (args) works and returns results
 from main help & subcommand help
@@ -42,7 +43,7 @@ Results subcommand
 def test_add_dev_without_quotes():
     assert eco(COMMAND_add_dev_no_quotes) == more_found(EXPECTED_add_dev_no_quotes, COMMAND_add_dev_no_quotes, man=True)
 
-def test_add_dev_without_quotes_with_line_index():
+def test_add_dev_without_quotes_with_no_line_index():
     command = COMMAND_add_dev_no_quotes + " ++line"
     expected = EXPECTED_add_dev_no_quotes.split("\n")
     line_index_1 = get_index_from_help("cargo", "add         Add dependencies to a manifest file")
