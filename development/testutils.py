@@ -29,39 +29,47 @@ def get_index_from_help(command: str, needle: str):
             return i
         i+=1
 
-
-"""
-
-"""
-def eco_returns(command: str, expected: str, without_line_index: bool=False) -> bool:
-    returned: str = eco(command)
-    if without_line_index:
-        # Original default, expecteds are written without line indexes
-        return returned == expected
-    else:
-        # New default, as this is more informational with little clutter
-        returned_lines: list[str] = returned.split("\n")
-        expected_lines: list[str] = expected.split("\n")
-        for i in range(0, len(expected_lines)):
-            line = expected_lines[i]
-            line_index = get_index_from_help(command, line)
-            expected_lines[i] = f"[{line_index}] {line}"
-
-        
-        for i in range(0, len(returned_lines)):
-            returned_line = returned_lines[i]
-            expected_line = expected_lines[i]
-
-
-            if expected_line == "[0] " and returned_line == "":
-                continue
-            if expected_line != returned_line:
-                raise AssertionError(f"'{expected_line}'\nEXPECTED DOES NOT EQUAL RETURNED\n'{returned_line}'")
+def equal_or_assertionerror(returned: str, expected: str):
+    if returned == expected:
         return True
+    else:
+        raise AssertionError(f"'{returned}'\n(returned value) does not equal expected value\n{expected}'")
 
 
+"""
+Assert that a command returns the expected result with and without ++no-index 
+"""
+def eco_returns(command: str, expected: str) -> bool:
+    # First compare with ++no-index
+    # Original default, expecteds are written without line indexes
+    assert equal_or_assertionerror(eco("++no-index " + command), expected)
 
+    # New default, as this is more informational with little clutter
+    returned_lines: list[str] = eco(command).split("\n")
+
+    # Transform expected lines to add line index
+    expected_lines: list[str] = expected.split("\n")
+    for i in range(0, len(expected_lines)):
+        line = expected_lines[i]
+        line_index = get_index_from_help(command, line)
+        expected_lines[i] = f"[{line_index}] {line}"
     
+    # Compare lines
+    for i in range(0, len(returned_lines)):
+        returned_line = returned_lines[i]
+        expected_line = expected_lines[i]
+        
+        if expected_line == "[0] " and returned_line == "":
+            continue
+
+        # Ensure first character is the index bracket
+        assert equal_or_assertionerror(returned_line[0], "[")
+        assert equal_or_assertionerror(expected_line[0], "[")
+
+        assert equal_or_assertionerror(returned_line, expected_line)
+
+    # If this part is reached, all assertions succeeded
+    return True
 
 
 EXPECTED_MORE_FOUND = """
