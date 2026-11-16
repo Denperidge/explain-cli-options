@@ -4,6 +4,6 @@ version = "0.1.0"
 description = "Development tools for eco"
 requires-python = ">=3.13"
 dependencies = [
-    "pytest>=9.0.3",
-    "vermin>=1.8.0",
+    "pytest>=9.2.0",
+    "vermin>=1.9.2",
 ]
