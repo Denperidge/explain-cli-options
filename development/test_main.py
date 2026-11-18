@@ -1,15 +1,15 @@
-from testutils import eco, get_index_from_help
+from testutils import eco, get_index_from_help, get_index_from_man
 from pytest import mark
 from cargo import TESTS
 
-@mark.parametrize("command, expected", TESTS)
+@mark.parametrize("command, expected, more_found", TESTS)
 class TestEco:
     # First compare with ++no-index
     # Original default, expecteds are written without line indexes
-    def test_without_index(self, command: str, expected: str):
+    def test_without_index(self, command: str, expected: str, more_found: str):
         assert eco("++no-index " + command) == expected
 
-    def test_with_index(self, command: str, expected: str):
+    def test_with_index(self, command: str, expected: str, more_found: str):
         # New default, as this is more informational with little clutter
         returned_lines: list[str] = eco(command).split("\n")
 
@@ -17,7 +17,7 @@ class TestEco:
         expected_lines: list[str] = expected.split("\n")
         for i in range(0, len(expected_lines)):
             line = expected_lines[i]
-            line_index = get_index_from_help(command, line)
+            line_index = get_index_from_help(command, line) or get_index_from_man(command, line)
             expected_lines[i] = f"[{line_index}] {line}"
         
         # Compare lines

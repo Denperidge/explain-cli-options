@@ -1,4 +1,6 @@
 from math import exp
+from multiprocessing import Value
+from operator import ne
 from subprocess import run as _run
 from typing import Literal
 
@@ -22,13 +24,22 @@ Other versions of dependencies have different indexes
 this broke CI on GitHub Actions/ubuntu-latest
 Use a search instead
 """
-def get_index_from_help(command: str, needle: str):
-    help_out = get_help(command).split("\n")
+def get_index_from(command: str, needle: str):
+    needle = needle.strip()
+    output = run(command).split("\n")
     i = 0
-    for line in help_out:
+    for line in output:
         if needle in line:
             return i
         i+=1
+    #raise ValueError(f"Needle {needle} not found in {command}. output: {output}")
+
+def get_index_from_help(command: str, needle: str):
+    return get_index_from(command + " --help", needle)
+
+def get_index_from_man(command: str, needle: str):
+    return get_index_from("man " + command.split(" ")[0], needle)  # TODO: cleaner version than command split
+
 
 def equal_or_assertionerror(returned: str, expected: str):
     if returned == expected:
@@ -49,38 +60,38 @@ def equal_or_assertionerror(returned: str, expected: str):
 #         "" if "+m" in command else "", command)
 #
 
-
-class TestEco:
-    # First compare with ++no-index
-    # Original default, expecteds are written without line indexes
-    def test_without_index(self, command: str, expected: str):
-        assert eco("++no-index " + command) == expected
-
-    def test_with_index(self, command: str, expected: str):
-        # New default, as this is more informational with little clutter
-        returned_lines: list[str] = eco(command).split("\n")
-
-        # Transform expected lines to add line index
-        expected_lines: list[str] = expected.split("\n")
-        for i in range(0, len(expected_lines)):
-            line = expected_lines[i]
-            line_index = get_index_from_help(command, line)
-            expected_lines[i] = f"[{line_index}] {line}"
-        
-        # Compare lines
-        for i in range(0, len(returned_lines)):
-            returned_line = returned_lines[i]
-            expected_line = expected_lines[i]
-            
-            if expected_line == "[0] " and returned_line == "":
-                continue
-
-            # Ensure first character is the index bracket
-            assert returned_line[0] == "["
-            assert expected_line[0] == "["
-
-            assert returned_line == expected_line
-
+#
+# class TestEco:
+#     # First compare with ++no-index
+#     # Original default, expecteds are written without line indexes
+#     def test_without_index(self, command: str, expected: str):
+#         assert eco("++no-index " + command) == expected
+#
+#     def test_with_index(self, command: str, expected: str):
+#         # New default, as this is more informational with little clutter
+#         returned_lines: list[str] = eco(command).split("\n")
+#
+#         # Transform expected lines to add line index
+#         expected_lines: list[str] = expected.split("\n")
+#         for i in range(0, len(expected_lines)):
+#             line = expected_lines[i]
+#             line_index = get_index_from_help(command, line)
+#             expected_lines[i] = f"[{line_index}] {line}"
+#         
+#         # Compare lines
+#         for i in range(0, len(returned_lines)):
+#             returned_line = returned_lines[i]
+#             expected_line = expected_lines[i]
+#             
+#             if expected_line == "[0] " and returned_line == "":
+#                 continue
+#
+#             # Ensure first character is the index bracket
+#             assert returned_line[0] == "["
+#             assert expected_line[0] == "["
+#
+#             assert returned_line == expected_line
+#
 
 """
 Assert that a command returns the expected result with and without ++no-index
