@@ -22,7 +22,6 @@ this broke CI on GitHub Actions/ubuntu-latest
 Use a search instead
 """
 def get_index_from(command: str, needle: str):
-    needle = needle.strip()
     output = run(command).split("\n")
     i = 0
     for line in output:
