@@ -1,8 +1,8 @@
 from testutils import eco, get_index_from_help, get_index_from_man
 from pytest import mark
-from cargo import TESTS
+from tests.cargo import CARGO_TESTS
 
-@mark.parametrize("command, expected, more_found", TESTS)
+@mark.parametrize("command, expected, more_found", CARGO_TESTS)
 class TestEco:
     # First compare with ++no-index
     # Original default, expecteds are written without line indexes
