@@ -26,5 +26,5 @@ fi
 if [[ "$1" == -t ]] || [[ $1 == --t* ]]; then
     shift  # Remove first arg
     man cargo | cat
-    uv run pytest -v $@  # Pass other args
+    uv run pytest test_main.py -v $@  # Pass other args
 fi
