@@ -2,9 +2,10 @@ from tests import MoreFoundIn
 from testutils import EXPECTED_MORE_FOUND, add_more_found_if_needed, eco, get_index_from_help, get_index_from_man, more_found
 from pytest import mark
 from tests.cargo import CARGO_TESTS
+from tests.rsync import RSYNC_TESTS
 
 
-@mark.parametrize("command, expected, more_found_in", CARGO_TESTS)
+@mark.parametrize("command, expected, more_found_in", CARGO_TESTS + RSYNC_TESTS)
 class TestEco:
     # First compare with ++no-index
     # original default, expecteds are written without line indexes
