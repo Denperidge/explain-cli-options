@@ -68,7 +68,8 @@ Returns: list of lines matching the needle regex(es)
 """
 def search_in_lines(haystack: list[str], needle: str) -> list[str]:
     regex_find_needle = fr"([^-\w]|^){needle}([^-]|$)"
-    regex_letters_not_from_needle = fr"[^\W0-9{needle.replace("-", "")}]"
+    
+    regex_letters_not_from_needle = fr"[^\W0-9" + needle.replace("-", "") + "]"
     debug(f"Searching help for {needle} with {regex_find_needle} & {regex_letters_not_from_needle}")
     
     relevant_lines = []
@@ -250,7 +251,7 @@ if __name__ == "__main__":
     subcommand_docs = []
     possible_subcommand_names = list(filter(lambda arg: not arg.startswith("-"), args.args))
     for i in range(1, len(possible_subcommand_names)+1):
-        command = f"{args.command} {" ".join(possible_subcommand_names[0:i])}"
+        command = f"{args.command} " + " ".join(possible_subcommand_names[0:i])
         (subdocs, submsg) = get_relevant_docs(command, mode, args.args[i:])
         subcommand_docs += subdocs
         if submsg:
