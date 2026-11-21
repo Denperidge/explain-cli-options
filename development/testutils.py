@@ -1,19 +1,16 @@
 from subprocess import run as _run
-from typing import Literal
-from re import  sub, finditer, match
+from re import match, MULTILINE
 
-from re import MULTILINE
-REGEX_NO_QUOTES = r"""^(?P<one>['"]).+?(?P<two>['"])"""
-
+from tests import MoreFoundIn
 
 """
-
 Input: 'cargo add' --dev --help
 Output: cargo add --dev --help
 
 Input: cargo 'add dev' --help
 Output: cargo 'add dev' --help
 """
+REGEX_NO_QUOTES = r"""^(?P<one>['"]).+?(?P<two>['"])"""
 def clean_first_quotes(string: str):
     regexmatch = match(REGEX_NO_QUOTES, string, MULTILINE)
     if not regexmatch:
@@ -74,26 +71,6 @@ def get_index_from_help(command: str, needle: str):
 def get_index_from_man(command: str, needle: str):
     return get_index_from(command, needle, True)
 
-
-def equal_or_assertionerror(returned: str, expected: str):
-    if returned == expected:
-        return True
-    else:
-        raise AssertionError(f"\n'{returned}'\n(returned value) does not equal expected value\n'{expected}'")
-
-
-
-
-
-
-# EXPECTED_MORE_FOUND = """
-# More results were found in man pages. To search there, run:
-# $ ../eco.py {0}++no-index {1}
-# """
-# def more_found(expected: str, command: str, with_index:bool=False, man:bool=False):
-#     return expected + EXPECTED_MORE_FOUND.format(
-#         "" if not man else "+m ", command.replace("'", ""))  # TODO cleaner solution than replace
-#
 EXPECTED_MORE_FOUND = """
 More results were found in man pages. To search there, run:
 $ ../eco.py {0}{1}{2}
@@ -104,7 +81,6 @@ def more_found(command: str, expected: str, no_index:bool=False, man: bool=False
         "" if not no_index else "++no-index ",
         clean_first_quotes(command))
 
-from tests import MoreFoundIn
 def add_more_found_if_needed(command: str, expected: str, no_index:bool, more_found_in: MoreFoundIn):
     if more_found_in != "N/A":
         expected = more_found(command, expected, no_index, False if more_found_in == "More found in help" else True)
