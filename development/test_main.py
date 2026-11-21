@@ -25,6 +25,9 @@ class TestEco:
             line = expected_lines[i]
             if line.startswith("More results were"):  # TODO dynamic
                 break
+            if line.startswith("Results "):
+                continue
+            
             line_index = get_index_from_help(command, line) or get_index_from_man(command, line)
             expected_lines[i] = f"[{line_index}] {line}"
         

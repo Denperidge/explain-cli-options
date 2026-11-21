@@ -28,7 +28,9 @@ def clean_first_quotes(string: str):
 
 def run(command: str):
     out = _run(clean_first_quotes(command), shell=True, encoding="utf-8", capture_output=True)
-    if out.returncode != 0:
+    if out.returncode == 16 and command.startswith("man"):
+        pass  # man cargo -v  returns this, for example
+    elif out.returncode != 0:
         raise Exception(out.stderr)
     return out.stdout
 
@@ -46,20 +48,31 @@ Other versions of dependencies have different indexes
 this broke CI on GitHub Actions/ubuntu-latest
 Use a search instead
 """
-def get_index_from(command: str, needle: str):
-    output = run(command).split("\n")
-    i = 0
-    for line in output:
-        if needle in line:
-            return i
-        i+=1
+def get_index_from(command: str, needle: str, man:bool=False):
+    command = clean_first_quotes(command)
+    commands = command.split(" ")
+
+    # First look in base command. Otherwise,
+    for i in range(1, len(commands) ):
+        command = " ".join(commands[0:i])
+        if man:
+            command = "man " + command
+        else:
+            command += " --help"
+
+        output = run(command).split("\n")
+        i = 0
+        for line in output:
+            if needle in line:
+                return i
+            i+=1
     #raise ValueError(f"Needle {needle} not found in {command}. output: {output}")
 
 def get_index_from_help(command: str, needle: str):
-    return get_index_from(command + " --help", needle)
+    return get_index_from(command, needle, False)
 
 def get_index_from_man(command: str, needle: str):
-    return get_index_from("man " + clean_first_quotes(command).split(" ")[0], needle)  # TODO: cleaner version than command split
+    return get_index_from(command, needle, True)
 
 
 def equal_or_assertionerror(returned: str, expected: str):
