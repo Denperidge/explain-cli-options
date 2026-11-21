@@ -4,9 +4,10 @@ from pytest import mark
 from tests.cargo import CARGO_TESTS
 from tests.rsync import RSYNC_TESTS
 from tests.tar import TAR_TESTS
+from tests.uv import UV_TESTS
 
 
-@mark.parametrize("command, expected, more_found_in", CARGO_TESTS + RSYNC_TESTS + TAR_TESTS)
+@mark.parametrize("command, expected, more_found_in", CARGO_TESTS + RSYNC_TESTS + TAR_TESTS + UV_TESTS)
 class TestEco:
     # First compare with ++no-index
     # original default, expecteds are written without line indexes
