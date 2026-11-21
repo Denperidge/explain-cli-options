@@ -1,7 +1,7 @@
 from testutils import eco
 import pytest
 
-# TODO Fails in CI, needs investigating
+# TODO Fails in CI, needs investigating. Also needs refactor to new tests scheme
 
 #COMMANDS = [
 #    {
